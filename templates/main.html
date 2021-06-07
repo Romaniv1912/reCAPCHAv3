@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <style type="text/css">
+    .grecaptcha-badge { visibility: hidden; }
+    </style>
+</head>
+<body>
+	<!--Подключение jQuery-->
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	<!--Подключение reCaptcha v3-->
+	<script src="https://www.google.com/recaptcha/api.js?render={{SITE_KEY}}"></script>
+	<script>
+		//Функция получает score  
+		function getResult() {
+			grecaptcha.ready(function() {
+				//Получаем токен гугла
+				grecaptcha.execute('{{SITE_KEY}}', {action: 'homepage'}).then(function(token) {
+					//Делаем запрос к нашему серверу на получения данных 
+					$.post("/get_score", { TOKEN: token}, function(data) {
+						console.log(data['score']);
+					});
+				});	
+			});
+			
+		}
+
+		//Повторение функции сразу, через 10 сек. и 30 сек.
+		getResult();
+		setTimeout(getResult, 10000);
+		setTimeout(getResult, 30000);
+	</script>
+</body>
+</html>
